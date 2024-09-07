@@ -276,7 +276,7 @@ const MatrixCalculator: React.FC = () => {
                     <div className="article-body">
                         <h2>Matriz 2x2</h2>
                         <div>
-                            <select onChange={(e) => setOperation2x2(e.target.value)}>
+                            <select aria-label="operacion-matriz-2x2" onChange={(e) => setOperation2x2(e.target.value)}>
                                 <option value="inversa">Inversa</option>
                                 <option value="suma">Suma</option>
                                 <option value="resta">Resta</option>
@@ -359,7 +359,7 @@ const MatrixCalculator: React.FC = () => {
                     <div className="article-body">
                         <h2>Matriz 3x3</h2>
                         <div>
-                            <select onChange={(e) => setOperation3x3(e.target.value)}>
+                            <select aria-label="operacion-matriz-3x3" onChange={(e) => setOperation3x3(e.target.value)}>
                                 <option value="inversa">Inversa</option>
                                 <option value="suma">Suma</option>
                                 <option value="resta">Resta</option>
