@@ -1,55 +1,71 @@
-import React, { ChangeEvent, ReactNode, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { z } from 'zod';
 
+// Esquema de validación usando Zod
 const matrixSchema = z.number().min(0, "El valor debe ser un número positivo");
 
 interface MatrixInputProps {
-  size: number;
+  rows: number;
+  cols: number;
   matrix: number[][];
   onChange: (i: number, j: number, value: number) => void;
-  ariaLabelPrefix: string;
-  children?: ReactNode;
+  matrixName: string; 
 }
 
-const MatrixInput: React.FC<MatrixInputProps> = ({ size, matrix, onChange, ariaLabelPrefix, children }) => {
-  const [inputValues, setInputValues] = useState<string[][]>(
-    matrix.map(row => row.map(value => value === 0 ? "" : value.toString()))
-  );
+const MatrixInput: React.FC<MatrixInputProps> = ({ rows, cols, matrix, onChange, matrixName }) => {
+  const [errors, setErrors] = useState<string[][]>([]);
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>, i: number, j: number) => {
-    const value = e.target.value;
+  // Inicializa errores con dimensiones correctas
+  useEffect(() => {
+    const initialErrors = Array.from({ length: rows }, () => Array(cols).fill(''));
+    console.log('Inicializando errores:', initialErrors); // Verificación
+    setErrors(initialErrors);
+  }, [rows, cols]);
 
-    const validation = matrixSchema.safeParse(value === "" ? 0 : parseFloat(value));
+  const handleChange = (i: number, j: number, value: string) => {
+    const parsedValue = parseFloat(value);
 
-    if (validation.success) {
-      // Actualizamos el valor temporal en el input
-      const newInputValues = [...inputValues];
-      newInputValues[i][j] = value; // Mantener "" temporalmente en el input
-      setInputValues(newInputValues);
+    if (value === '') {
+      onChange(i, j, 0);
+      return;
+    }
 
-      // Actualizamos el estado principal de la matriz con 0 si el campo está vacío
-      onChange(i, j, value === "" ? 0 : parseFloat(value));
+    const parseResult = matrixSchema.safeParse(parsedValue);
+
+    if (!parseResult.success) {
+      const newErrors = [...errors];
+      newErrors[i][j] = parseResult.error.errors[0].message;
+      setErrors(newErrors);
     } else {
-      console.error("Valor inválido:", validation.error.issues);
+      const newErrors = [...errors];
+      newErrors[i][j] = '';
+      setErrors(newErrors);
+      onChange(i, j, parsedValue);
     }
   };
 
+  console.log('Errores actuales:', errors); // Verificación
+
   return (
-    <div>
-      {Array.from({ length: size }).map((_, i) => (
-        <div key={i}>
-          {Array.from({ length: size }).map((_, j) => (
-            <input
-              key={j}
-              type="number"
-              aria-label={`${ariaLabelPrefix}-${i}-${j}`}
-              value={inputValues[i][j]} // El valor es la cadena que se muestra en el input
-              onChange={(e) => handleInputChange(e, i, j)}
-            />
+    <div className="matrix-grid" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+      {Array.from({ length: rows }).map((_, rowIndex) => (
+        <React.Fragment key={rowIndex}>
+          {Array.from({ length: cols }).map((_, colIndex) => (
+            <div key={colIndex}>
+              <input
+                type="number"
+                value={matrix[rowIndex][colIndex] === 0 ? '' : matrix[rowIndex][colIndex]}
+                onChange={(e) => handleChange(rowIndex, colIndex, e.target.value)}
+                aria-label={`input-${matrixName}-${rowIndex}-${colIndex}`} // Asegura que el nombre sea único
+
+              />
+              {errors[rowIndex] && errors[rowIndex][colIndex] && (
+                <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors[rowIndex][colIndex]}</p>
+              )}
+            </div>
           ))}
-        </div>
+        </React.Fragment>
       ))}
-      {children && <div>{children}</div>}
     </div>
   );
 };

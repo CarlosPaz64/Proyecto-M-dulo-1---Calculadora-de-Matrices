@@ -147,3 +147,15 @@ article {
     white-space: nowrap; 
     width: 1px;
   }
+/* Asegurémonos de que los inputs se acomoden en formato de tabla */
+.matrix-grid {
+  display: grid;
+  gap: 10px; /* Espaciado entre inputs */
+}
+
+.matrix-grid input {
+  width: 50px; /* Ajusta el tamaño de los inputs para que se vean como una matriz */
+  height: 50px;
+  text-align: center;
+  font-size: 16px;
+}
