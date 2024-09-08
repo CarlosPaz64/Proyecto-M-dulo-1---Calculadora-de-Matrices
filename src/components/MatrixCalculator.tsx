@@ -1,21 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; // Llamada al hook de useState
 import MatrixInput from '../MatrixInput';
 import { sumMatrices, subtractMatrices, multiplyMatrices, invertMatrix, determinant } from './operationsCalculator';
 import DimensionsColumn from './dimensionsColumn';
 import { floatToFraction } from './floatToFraction';
 import './MatrixCalculator.css';
 
-const MatrixCalculator: React.FC = () => {
+const MatrixCalculator: React.FC = () => { //React Functional Component
+    // Inferencia de tipo: matrixA es de tipo number[][]
     const [matrixA, setMatrixA] = useState<number[][]>([[0, 0], [0, 0]]);
+
+    // Inferencia de tipo: matrixB es de tipo number[][]
     const [matrixB, setMatrixB] = useState<number[][]>([[0, 0], [0, 0]]);
+
+    // Inferencia de tipo: matrixSize es de tipo { rows: number; cols: number }
     const [matrixSize, setMatrixSize] = useState<{ rows: number; cols: number }>({ rows: 2, cols: 2 });
+
+    // Inferencia de tipo: operation es de tipo string
     const [operation, setOperation] = useState<string>('suma');
+
+    // Inferencia de tipo: resultMatrix es de tipo number[][] | null
     const [resultMatrix, setResultMatrix] = useState<number[][] | null>(null);
+
+    // Inferencia de tipo: determinantValue es de tipo number | null
     const [determinantValue, setDeterminant] = useState<number | null>(null);
+
+    // Inferencia de tipo: inverseMatrix es de tipo number[][] | null
     const [inverseMatrix, setInverseMatrix] = useState<number[][] | null>(null);
+
+    // Inferencia de tipo: warningMessage es de tipo string | null
     const [warningMessage, setWarningMessage] = useState<string | null>(null);
 
-    // Función para actualizar el tamaño de las matrices
     const updateMatrixSize = (rows: number, cols: number) => {
         if (rows < 1 || rows > 3 || cols < 1 || cols > 3) {
             setWarningMessage('Las dimensiones de la matriz deben ser entre 1 y 3.');
@@ -24,18 +38,14 @@ const MatrixCalculator: React.FC = () => {
         setWarningMessage(null);
         setMatrixSize({ rows, cols });
 
-        // Actualiza las matrices A y B con el nuevo tamaño
         setMatrixA(Array.from({ length: rows }, () => Array(cols).fill(0)));
         setMatrixB(Array.from({ length: rows }, () => Array(cols).fill(0)));
     };
-      
 
-    // Función para manejar operaciones
+    // Función que maneja los diferentes eventos del onChange y onClick
     const handleOperation = () => {
-        console.log("Matriz A:", matrixA);
-        console.log("Matriz B:", matrixB);
         let result: { result: number[][] | null; determinant: number | null; inverse: number[][] | null } | null = null;
-    
+
         if (operation === 'suma') {
             result = sumMatrices(matrixA, matrixB);
         } else if (operation === 'resta') {
@@ -63,11 +73,11 @@ const MatrixCalculator: React.FC = () => {
                 result = { result: inversa, determinant: determinante, inverse: inversa };
             }
         }
-    
+
         if (result && result.result) {
             setResultMatrix(result.result);
-            setDeterminant(result.determinant ?? null);  // Guardar el determinante
-            setInverseMatrix(result.inverse ?? null); // Guardar la inversa
+            setDeterminant(result.determinant ?? null);
+            setInverseMatrix(result.inverse ?? null);
         } else {
             setResultMatrix(null);
             setDeterminant(null);
@@ -83,10 +93,10 @@ const MatrixCalculator: React.FC = () => {
 
                     {warningMessage && <p style={{ color: 'red' }}>{warningMessage}</p>}
 
-                    {/* Selector de operación */}
                     <div>
                         <h2>Operación</h2>
                         <select onChange={(e) => setOperation(e.target.value)} aria-label="selector-operacion">
+                            {/* Manejo de eventos mediante el uso de onChange */}
                             <option value="suma">Suma</option>
                             <option value="resta">Resta</option>
                             <option value="multiplicacion">Multiplicación</option>
@@ -94,7 +104,6 @@ const MatrixCalculator: React.FC = () => {
                         </select>
                     </div>
 
-                    {/* Inputs para Matrix A */}
                     <div>
                         <h2>Matriz A ({matrixSize.rows}x{matrixSize.cols})</h2>
                         <MatrixInput
@@ -102,16 +111,18 @@ const MatrixCalculator: React.FC = () => {
                             cols={matrixSize.cols}
                             matrix={matrixA}
                             onChange={(i, j, value) => {
+                            {/* Manejo de eventos mediante el uso de onChange */}
                                 const newMatrix = [...matrixA];
                                 newMatrix[i][j] = value;
-                                console.log("Actualizando Matriz A:", newMatrix); // Depuración
                                 setMatrixA(newMatrix);
                             }}
                             matrixName="A"
-                        />
+                        >
+                            {/* Children opcionales */}
+                            <p>Matriz A con tamaño {matrixSize.rows}x{matrixSize.cols}</p>
+                        </MatrixInput>
                     </div>
 
-                    {/* Inputs para Matrix B (solo si no es operación inversa) */}
                     {operation !== 'inversa' && (
                         <div>
                             <h2>Matriz B ({matrixSize.rows}x{matrixSize.cols})</h2>
@@ -120,13 +131,16 @@ const MatrixCalculator: React.FC = () => {
                                 cols={matrixSize.cols}
                                 matrix={matrixB}
                                 onChange={(i, j, value) => {
+                                {/* Manejo de eventos mediante el uso de onChange */}
                                     const newMatrix = [...matrixB];
                                     newMatrix[i][j] = value;
-                                    console.log("Actualizando Matriz B:", newMatrix); // Depuración
                                     setMatrixB(newMatrix);
                                 }}
                                 matrixName="B"
-                            />
+                            >
+                            {/* Children opcionales */}
+                            <p>Matriz B con tamaño {matrixSize.rows}x{matrixSize.cols}</p>
+                            </MatrixInput>
                         </div>
                     )}
 
@@ -134,7 +148,6 @@ const MatrixCalculator: React.FC = () => {
                 </div>
             </article>
 
-            {/* Mostrar resultado */}
             {resultMatrix && (
                 <article>
                     <div className="article-body">
@@ -151,12 +164,10 @@ const MatrixCalculator: React.FC = () => {
                             </tbody>
                         </table>
 
-                        {/* Mostrar determinante si existe */}
                         {determinantValue !== null && (
                             <h4>Determinante: {floatToFraction(determinantValue)}</h4>
                         )}
 
-                        {/* Mostrar inversa si existe */}
                         {inverseMatrix && (
                             <div>
                                 <h4>Matriz Inversa:</h4>
