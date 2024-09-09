@@ -1,24 +1,34 @@
 // floatToFraction.tsx
 
-// Función que convierte un número flotante a una fracción simple
-export function floatToFraction(num: number, tolerance: number = 1.0e-6): string {
+// Función para convertir decimales a fracciones
+export function floatToFraction(num: number, maxDenominator: number = 1000): string {
     if (Number.isInteger(num)) {
-        return num.toString(); // Si es un entero, retornamos el número como está
+        return num.toString(); // Si es un entero, retornar el número como está
     }
 
-    let numerator = 1;
-    let denominator = 1;
-    let decimal = num - Math.floor(num);
+    const sign = num < 0 ? -1 : 1; // Mantener el signo
+    num = Math.abs(num);
 
-    while (Math.abs(decimal) > tolerance && denominator <= 10000) {
-        decimal *= 10;
-        denominator *= 10;
-        numerator = Math.round(num * denominator);
-        decimal = (num * denominator) - numerator;
+    let bestNumerator = 1;
+    let bestDenominator = 1;
+    let minDifference = Math.abs(num - bestNumerator / bestDenominator);
+
+    for (let denominator = 1; denominator <= maxDenominator; denominator++) {
+        const numerator = Math.round(num * denominator);
+        const difference = Math.abs(num - numerator / denominator);
+
+        if (difference < minDifference) {
+            minDifference = difference;
+            bestNumerator = numerator;
+            bestDenominator = denominator;
+        }
     }
 
+    // Simplificar la fracción dividiendo por el MCD
     const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
-    const divisor = gcd(numerator, denominator);
+    const divisor = gcd(bestNumerator, bestDenominator);
+    bestNumerator = (bestNumerator / divisor) * sign;
+    bestDenominator = bestDenominator / divisor;
 
-    return `${numerator / divisor}/${denominator / divisor}`;
+    return `${bestNumerator}/${bestDenominator}`;
 }
