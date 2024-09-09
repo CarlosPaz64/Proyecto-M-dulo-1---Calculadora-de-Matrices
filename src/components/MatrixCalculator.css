@@ -10,6 +10,7 @@ article {
     transform-origin: center;
     transition: all 0.4s ease-in-out;
     overflow: hidden;
+    max-width: 100%; /* Asegura que los artículos ocupen el máximo ancho permitido */
   }
   
   article a::after {
@@ -23,7 +24,7 @@ article {
   /* basic article elements styling */
   article h2 {
     margin: 0 0 18px 0;
-    font-family: "Bebas Neue", cursive;
+    font-family: "Lucida Console", "Courier New", monospace;
     font-size: 1.9rem;
     letter-spacing: 0.06em;
     color: var(--title-color);
@@ -92,7 +93,7 @@ article {
   body {
     margin: 0;
     padding: 48px 0;
-    font-family: "Figtree", sans-serif;
+    font-family: "Lucida Console", "Courier New", monospace;
     font-size: 1.2rem;
     line-height: 1.6rem;
     background-image: linear-gradient(45deg, #7c9885, #b5b682);
@@ -104,9 +105,16 @@ article {
     max-width: 1200px;
     margin-inline: auto;
     padding-inline: 24px;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 24px;
+    justify-content: center;
+    align-items: start;
   }
+
+  .article-body {
+    text-align: center; /* Centra el texto dentro de los artículos */
+  }
+  
   
   @media screen and (max-width: 960px) {
     article {
@@ -158,4 +166,73 @@ article {
   height: 50px;
   text-align: center;
   font-size: 16px;
+}
+
+/* Estilo para el botón */
+button {
+  background-color: #28666e;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  align-self: center;
+}
+
+button:hover {
+  background-color: #1f5054;
+}
+
+/* Estilo para el select */
+select {
+  padding: 10px;
+  font-size: 1rem;
+  border: 2px solid #28666e;
+  border-radius: 5px;
+  background-color: white;
+  color: #28666e;
+  transition: border-color 0.3s ease;
+}
+
+select:hover {
+  border-color: #1f5054;
+}
+
+/* Estilo para la tabla */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table, th, td {
+  border: 2px solid #28666e;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #28666e;
+  color: white;
+}
+
+td {
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #e9f0ef;
+}
+/* Aplica un display block para que cada elemento (label, input, button) esté en su propia línea */
+.dimensions-column-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra todos los elementos horizontalmente */
+  gap: 10px; /* Espaciado entre los elementos */
 }

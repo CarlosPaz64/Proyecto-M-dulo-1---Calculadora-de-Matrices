@@ -1,8 +1,10 @@
 import React, { useState, useEffect, ReactNode } from 'react'; // Llamada a useEffect y React Node
 import { z } from 'zod';
 
-// Esquema de validación usando Zod
-const matrixSchema = z.number().min(0, "El valor debe ser un número positivo"); 
+// Esquema de validación usando Zod para aceptar cualquier número (negativo o positivo)
+const matrixSchema = z.number().refine((val) => !isNaN(val), {
+  message: "El valor debe ser un número válido",
+}); 
 
 interface MatrixInputProps {
   rows?: number;  // Opcional, pero manejado en MatrixCalculator
