@@ -4,7 +4,7 @@ import { z } from 'zod';
 // Esquema de validación usando Zod para aceptar cualquier número (negativo o positivo)
 const matrixSchema = z.number().refine((val) => !isNaN(val), {
   message: "El valor debe ser un número válido",
-}); 
+});
 
 interface MatrixInputProps {
   rows?: number;  // Opcional, pero manejado en MatrixCalculator
@@ -14,32 +14,50 @@ interface MatrixInputProps {
   matrixName: string;
   children?: ReactNode;  // Children opcional
 }
-// Creación de un componente funcional llamando a la anterior interfaz y manejando sus valores
+
 const MatrixInput: React.FC<MatrixInputProps> = ({
-  rows = 2,  // Valor por defecto si no se pasa desde MatrixCalculator
-  cols = 2,  // Valor por defecto si no se pasa desde MatrixCalculator
+  rows = 2,
+  cols = 2,
   matrix,
   onChange,
   matrixName,
   children,
 }) => {
   const [errors, setErrors] = useState<string[][]>([]);
+  const [inputValues, setInputValues] = useState<string[][]>(
+    matrix.map(row => row.map(value => value.toString())) // Inicializamos los valores como cadenas de texto
+  );
 
-  // Inicializa errores con dimensiones correctas
-  useEffect(() => { // Hook de useEffect
+  // Inicializa errores y valores de input con dimensiones correctas
+  useEffect(() => {
+    // Aquí preservamos los valores actuales si cambian las dimensiones
+    setInputValues(prevValues => {
+      const newValues = Array.from({ length: rows }, (_, i) =>
+        Array.from({ length: cols }, (_, j) => prevValues[i]?.[j] ?? '')); // Mantener valores previos o llenar con ''
+      return newValues;
+    });
+
+    // También inicializamos los errores
     const initialErrors = Array.from({ length: rows }, () => Array(cols).fill(''));
-    console.log('Inicializando errores:', initialErrors); // Depuración
     setErrors(initialErrors);
-  }, [rows, cols]);
+  }, [rows, cols, matrix]);
 
   const handleChange = (i: number, j: number, value: string) => {
-    const parsedValue = parseFloat(value);
+    setInputValues(prev => {
+      const newValues = [...prev];
+      newValues[i][j] = value;
+      return newValues;
+    });
 
+    // Permitir que el campo quede vacío cuando el usuario lo edite
     if (value === '') {
-      onChange(i, j, 0);
+      const newErrors = [...errors];
+      newErrors[i][j] = '';
+      setErrors(newErrors);
       return;
     }
 
+    const parsedValue = parseFloat(value);
     const parseResult = matrixSchema.safeParse(parsedValue);
 
     if (!parseResult.success) {
@@ -50,7 +68,7 @@ const MatrixInput: React.FC<MatrixInputProps> = ({
       const newErrors = [...errors];
       newErrors[i][j] = '';
       setErrors(newErrors);
-      onChange(i, j, parsedValue);
+      onChange(i, j, parsedValue); // Llamamos a la función de cambio solo cuando el valor es válido
     }
   };
 
@@ -62,8 +80,8 @@ const MatrixInput: React.FC<MatrixInputProps> = ({
             {Array.from({ length: cols }).map((_, colIndex) => (
               <div key={colIndex}>
                 <input
-                  type="number"
-                  value={matrix[rowIndex][colIndex] === 0 ? '' : matrix[rowIndex][colIndex]}
+                  type="number" // Cambiamos el tipo de input a "text" para permitir valores vacíos
+                  value={inputValues[rowIndex]?.[colIndex] ?? ''} // Mostramos el valor como cadena de texto
                   onChange={(e) => handleChange(rowIndex, colIndex, e.target.value)}
                   aria-label={`input-${matrixName}-${rowIndex}-${colIndex}`}
                 />
@@ -75,7 +93,7 @@ const MatrixInput: React.FC<MatrixInputProps> = ({
           </React.Fragment>
         ))}
       </div>
-      {children && <div>{children}</div>}  {/* Renderiza `children` si se pasa */}
+      {children && <div>{children}</div>}
     </div>
   );
 };
