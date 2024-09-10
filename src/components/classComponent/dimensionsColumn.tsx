@@ -14,10 +14,8 @@ interface DimensionsColumnState {
 }
 
 // Creamos el componente de clase DimensionsColumn, que extiende `React.Component`.
-// Los componentes de clase permiten manejar el estado a través de `this.state` y responder a cambios en el ciclo de vida del componente.
 class DimensionsColumn extends Component<DimensionsColumnProps, DimensionsColumnState> {
 
-  // El constructor es donde inicializamos el estado y recibimos las props que vienen del componente padre.
   constructor(props: DimensionsColumnProps) {
     super(props); // Llamada obligatoria a `super(props)` para heredar correctamente las props de React.Component
     this.state = {
@@ -43,7 +41,6 @@ class DimensionsColumn extends Component<DimensionsColumnProps, DimensionsColumn
   };
 
   // El método `render` es obligatorio en los componentes de clase.
-  // Se encarga de describir qué debe mostrar el componente en la interfaz.
   render() {
     const { rows, cols } = this.state; // Obtenemos los valores de `rows` y `cols` desde el estado local.
 

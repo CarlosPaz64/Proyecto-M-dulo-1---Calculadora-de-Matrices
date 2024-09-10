@@ -15,7 +15,6 @@ interface MatrixInputProps {
   children?: ReactNode;  // Children opcional que permite renderizar contenido adicional dentro del componente
 }
 
-// Este es un componente funcional porque es una función que devuelve JSX.
 // Utilizamos React.FC para definir que es un componente funcional, lo cual es adecuado cuando no necesitamos métodos de ciclo de vida complejos ni un estado manejado de manera compleja como en los componentes de clase.
 const MatrixInput: React.FC<MatrixInputProps> = ({
   rows = 2,  // Valor por defecto si no se pasan `rows` desde MatrixCalculator
@@ -48,7 +47,6 @@ const MatrixInput: React.FC<MatrixInputProps> = ({
   }, [rows, cols, matrix]); // Se ejecuta cuando cambian `rows`, `cols` o `matrix`
 
   // Esta función maneja los cambios en los inputs cuando el usuario introduce valores.
-  // Actualiza el estado de los inputs y verifica si el valor es válido utilizando Zod.
   const handleChange = (i: number, j: number, value: string) => {
     // Actualizamos el estado de los inputs con el nuevo valor
     setInputValues(prev => {
@@ -84,7 +82,6 @@ const MatrixInput: React.FC<MatrixInputProps> = ({
   };
 
   // JSX que se devuelve para renderizar el componente. 
-  // Es un componente funcional que no requiere ciclo de vida avanzado ni acceso a métodos del ciclo de vida, lo que lo hace más ligero y fácil de mantener.
   return (
     <div>
       {/* Grid para alinear los inputs como una matriz */}
