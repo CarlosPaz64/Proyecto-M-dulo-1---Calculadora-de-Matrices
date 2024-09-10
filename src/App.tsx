@@ -1,5 +1,5 @@
 import React from 'react';
-import MatrixCalculator from './components/MatrixCalculator';
+import MatrixCalculator from './components/principal/Calculadora';
 
 const App: React.FC = () => {
     return (

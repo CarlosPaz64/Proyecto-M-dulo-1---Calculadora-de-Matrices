@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import MatrixCalculator from './components/MatrixCalculator';
+import MatrixCalculator from './components/principal/Calculadora';
 import { describe, test, expect } from 'vitest';
 
 describe('MatrixCalculator', () => {
