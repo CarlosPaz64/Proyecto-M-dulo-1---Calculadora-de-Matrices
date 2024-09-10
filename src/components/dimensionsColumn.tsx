@@ -1,53 +1,51 @@
 import React, { Component } from 'react';
 
-// Interfaz que define las props que el componente recibirá
+// Definimos la interfaz DimensionsColumnProps que describe las props que recibirá el componente.
+// En este caso, se espera una función llamada setMatrixSize que será pasada desde el componente padre.
 interface DimensionsColumnProps {
-  setMatrixSize: (rows: number, cols: number) => void; // Función que el componente padre pasa para actualizar el tamaño de la matriz
+  setMatrixSize: (rows: number, cols: number) => void;
 }
 
-// Interfaz que define el estado del componente
+// Definimos la interfaz DimensionsColumnState que describe el estado del componente.
+// En este caso, manejamos el número de filas (rows) y columnas (cols) como parte del estado.
 interface DimensionsColumnState {
-  rows: number; // Cantidad de filas en la matriz
-  cols: number; // Cantidad de columnas en la matriz
+  rows: number;
+  cols: number;
 }
 
-// Componente de clase DimensionsColumn
-// Este es un componente de clase porque extiende de `React.Component` y usa `state` y `props`.
-// Los componentes de clase permiten manejar el estado de una manera más explícita y hacen uso del ciclo de vida de React.
+// Creamos el componente de clase DimensionsColumn, que extiende `React.Component`.
+// Los componentes de clase permiten manejar el estado a través de `this.state` y responder a cambios en el ciclo de vida del componente.
 class DimensionsColumn extends Component<DimensionsColumnProps, DimensionsColumnState> {
+
   // El constructor es donde inicializamos el estado y recibimos las props que vienen del componente padre.
-  // Es necesario usar `super(props)` para llamar al constructor de la clase `Component`.
   constructor(props: DimensionsColumnProps) {
-    super(props); // Llamada al constructor padre `Component`
+    super(props); // Llamada obligatoria a `super(props)` para heredar correctamente las props de React.Component
     this.state = {
-      rows: 2, // Estado inicial de las filas (2)
-      cols: 2, // Estado inicial de las columnas (2)
+      rows: 2, // Estado inicial para las filas (rows)
+      cols: 2, // Estado inicial para las columnas (cols)
     };
   }
 
-  // Este método maneja los cambios en el input de filas.
-  // `setState` actualiza el estado local del componente cuando el valor de las filas cambia.
+  // Este método maneja el cambio de filas. Cada vez que se cambia el valor en el input de filas,
+  // actualizamos el estado local (rows) y llamamos a la función `setMatrixSize` del componente padre.
   handleRowChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ rows: parseInt(e.target.value) });
+    const rows = parseInt(e.target.value);
+    this.setState({ rows }); // Actualiza el estado local con el nuevo valor de filas
+    this.props.setMatrixSize(rows, this.state.cols); // Llama al método del padre para actualizar las dimensiones de la matriz
   };
 
-  // Este método maneja los cambios en el input de columnas.
-  // `setState` actualiza el estado local del componente cuando el valor de las columnas cambia.
+  // Este método maneja el cambio de columnas. Cada vez que se cambia el valor en el input de columnas,
+  // actualizamos el estado local (cols) y llamamos a la función `setMatrixSize` del componente padre.
   handleColChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ cols: parseInt(e.target.value) });
+    const cols = parseInt(e.target.value);
+    this.setState({ cols }); // Actualiza el estado local con el nuevo valor de columnas
+    this.props.setMatrixSize(this.state.rows, cols); // Llama al método del padre para actualizar las dimensiones de la matriz
   };
 
-  // Este método llama a la función `setMatrixSize` que fue pasada como prop.
-  // Utiliza los valores actuales de `rows` y `cols` almacenados en el estado para actualizar el tamaño de la matriz en el componente padre.
-  handleUpdateMatrixSize = () => {
-    const { rows, cols } = this.state; // Extraemos `rows` y `cols` del estado
-    this.props.setMatrixSize(rows, cols); // Llamada a la función prop para actualizar el tamaño de la matriz
-  };
-
-  // El método `render` es obligatorio en un componente de clase.
-  // Define qué elementos se van a renderizar en el DOM y se actualiza cuando cambia el estado o las props.
+  // El método `render` es obligatorio en los componentes de clase.
+  // Se encarga de describir qué debe mostrar el componente en la interfaz.
   render() {
-    const { rows, cols } = this.state; // Obtenemos los valores del estado para mostrarlos en los inputs
+    const { rows, cols } = this.state; // Obtenemos los valores de `rows` y `cols` desde el estado local.
 
     return (
       <div className="dimensions-column-container">
@@ -56,10 +54,10 @@ class DimensionsColumn extends Component<DimensionsColumnProps, DimensionsColumn
           Filas:
           <input
             type="number"
-            value={rows} // El valor del input se enlaza al estado `rows`
+            value={rows} // El valor del input está enlazado al estado `rows`
             min={1}
             max={3}
-            onChange={this.handleRowChange} // Llama a `handleRowChange` cuando cambia el valor del input
+            onChange={this.handleRowChange} // Cada vez que cambie el valor, llamamos a `handleRowChange`
           />
         </label>
 
@@ -68,18 +66,16 @@ class DimensionsColumn extends Component<DimensionsColumnProps, DimensionsColumn
           Columnas:
           <input
             type="number"
-            value={cols} // El valor del input se enlaza al estado `cols`
+            value={cols} // El valor del input está enlazado al estado `cols`
             min={1}
             max={3}
-            onChange={this.handleColChange} // Llama a `handleColChange` cuando cambia el valor del input
+            onChange={this.handleColChange} // Cada vez que cambie el valor, llamamos a `handleColChange`
           />
         </label>
-
-        {/* Botón para actualizar el tamaño de la matriz */}
-        <button onClick={this.handleUpdateMatrixSize}>Actualizar Matriz</button>
       </div>
     );
   }
 }
 
+// Exportamos el componente para que pueda ser utilizado en otros archivos
 export default DimensionsColumn;
