@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
 
-// Definimos la interfaz DimensionsColumnProps que describe las props que recibirá el componente.
-// En este caso, se espera una función llamada setMatrixSize que será pasada desde el componente padre.
+// Interfaz de DimensionsColumnProps
 interface DimensionsColumnProps {
   setMatrixSize: (rows: number, cols: number) => void;
 }
 
-// Definimos la interfaz DimensionsColumnState que describe el estado del componente.
-// En este caso, manejamos el número de filas (rows) y columnas (cols) como parte del estado.
+// Interfaz DimensionsColumnState que describe el estado del componente.
 interface DimensionsColumnState {
   rows: number;
   cols: number;
 }
 
-// Creamos el componente de clase DimensionsColumn, que extiende `React.Component`.
+// Componente de clase DimensionsColumn, que extiende React.Component
 class DimensionsColumn extends Component<DimensionsColumnProps, DimensionsColumnState> {
 
   constructor(props: DimensionsColumnProps) {
@@ -24,23 +22,20 @@ class DimensionsColumn extends Component<DimensionsColumnProps, DimensionsColumn
     };
   }
 
-  // Este método maneja el cambio de filas. Cada vez que se cambia el valor en el input de filas,
-  // actualizamos el estado local (rows) y llamamos a la función `setMatrixSize` del componente padre.
+  // Este método maneja el cambio de filas
   handleRowChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rows = parseInt(e.target.value);
     this.setState({ rows }); // Actualiza el estado local con el nuevo valor de filas
     this.props.setMatrixSize(rows, this.state.cols); // Llama al método del padre para actualizar las dimensiones de la matriz
   };
 
-  // Este método maneja el cambio de columnas. Cada vez que se cambia el valor en el input de columnas,
-  // actualizamos el estado local (cols) y llamamos a la función `setMatrixSize` del componente padre.
+  // Este método maneja el cambio de columnas
   handleColChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const cols = parseInt(e.target.value);
     this.setState({ cols }); // Actualiza el estado local con el nuevo valor de columnas
     this.props.setMatrixSize(this.state.rows, cols); // Llama al método del padre para actualizar las dimensiones de la matriz
   };
 
-  // El método `render` es obligatorio en los componentes de clase.
   render() {
     const { rows, cols } = this.state; // Obtenemos los valores de `rows` y `cols` desde el estado local.
 

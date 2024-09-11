@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactNode } from 'react'; // Llamada a useState, useEffect y ReactNode
-import { z } from 'zod';
+import { z } from 'zod'; // Llamada a zod
 
 // Esquema de validación usando Zod para aceptar cualquier número (negativo o positivo)
 const matrixSchema = z.number().refine((val) => !isNaN(val), {
@@ -7,11 +7,11 @@ const matrixSchema = z.number().refine((val) => !isNaN(val), {
 });
 
 interface MatrixInputProps {
-  rows?: number;  // Prop opcional para las filas, puede manejarse desde MatrixCalculator
-  cols?: number;  // Prop opcional para las columnas, puede manejarse desde MatrixCalculator
+  rows?: number;
+  cols?: number;
   matrix: number[][];  // El estado de la matriz actual
   onChange: (i: number, j: number, value: number) => void;   // Función para actualizar el valor de una celda 
-  matrixName: string; // Nombre de la matriz (A o B) que se usará para etiquetar los inputs
+  matrixName: string; // Nombre de la matriz (A o B) que se usará para etiquetar los inputs (valor de las matrices en cuestión)
   children?: ReactNode;  // Children opcional que permite renderizar contenido adicional dentro del componente
 }
 
@@ -24,14 +24,13 @@ const MatrixInput: React.FC<MatrixInputProps> = ({
   matrixName,  // El nombre de la matriz (A o B)
   children,  // Children opcional que permite incluir elementos adicionales desde el componente padre
 }) => {
-  // `useState` es un hook de React que nos permite manejar el estado en componentes funcionales.
-  const [errors, setErrors] = useState<string[][]>([]); // Estado para manejar los mensajes de error
+  // Uso de useState
+  const [errors, setErrors] = useState<string[][]>([]); // Manejo de errores
   const [inputValues, setInputValues] = useState<string[][]>(
     matrix.map(row => row.map(value => value.toString())) // Inicializamos los valores como cadenas de texto para los inputs
   );
 
-  // `useEffect` es otro hook de React que se ejecuta después de que el componente ha sido renderizado.
-  // En este caso, se usa para inicializar los valores de los inputs y los errores cada vez que cambian las dimensiones (rows y cols).
+  // Uso de useEffect
   useEffect(() => {
     setInputValues(prevValues => {
       // Si las dimensiones cambian, actualizamos los valores manteniendo los anteriores cuando sea posible
@@ -46,7 +45,7 @@ const MatrixInput: React.FC<MatrixInputProps> = ({
     setErrors(initialErrors);
   }, [rows, cols, matrix]); // Se ejecuta cuando cambian `rows`, `cols` o `matrix`
 
-  // Esta función maneja los cambios en los inputs cuando el usuario introduce valores.
+  // Esta función maneja los cambios en los inputs cuando el usuario introduce valores (manejo de eventos).
   const handleChange = (i: number, j: number, value: string) => {
     // Actualizamos el estado de los inputs con el nuevo valor
     setInputValues(prev => {
@@ -81,7 +80,6 @@ const MatrixInput: React.FC<MatrixInputProps> = ({
     }
   };
 
-  // JSX que se devuelve para renderizar el componente. 
   return (
     <div>
       {/* Grid para alinear los inputs como una matriz */}
